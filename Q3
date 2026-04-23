@@ -1,0 +1,105 @@
+#include <iostream>
+#include <cstring>
+using namespace std;
+
+int main() {
+    const int MAX_WORDS = 5;
+
+    // 1. Create a string list that can store up to 5 words
+    char **list = new char*[MAX_WORDS];
+    int count = 0;  // Current number of words
+
+    // Store the following words in this exact order
+    const char* words[] = {"alpha", "bravo", "charlie", "delta", "echo"};
+
+    // Allocate memory for each word and copy it
+    for (int i = 0; i < 5; i++) {
+        int len = strlen(words[i]) + 1;  // +1 for null terminator
+        list[i] = new char[len];
+        strcpy(list[i], words[i]);  // Copy word into allocated memory
+        count++;
+    }
+
+    cout << "[Initial Dictionary]" << endl;
+    for (int i = 0; i < count; i++) {
+        cout << "[" << i << "] " << list[i] << endl;
+    }
+    cout << endl;
+
+    // 2. Search for the word 'delta'
+    const char* searchWord = "delta";
+    int foundIndex = -1;
+
+    for (int i = 0; i < count; i++) {
+        if (strcmp(list[i], searchWord) == 0) {
+            foundIndex = i;
+            break;
+        }
+    }
+
+    cout << "[Search Result]" << endl;
+    if (foundIndex != -1) {
+        cout << searchWord << " found at index " << foundIndex << endl;
+    } else {
+        cout << searchWord << " not found" << endl;
+    }
+    cout << endl;
+
+    // 3. Modify the word at index 1 from 'bravo' to 'blueberry'
+    const char* newWord = "blueberry";
+
+    // Free the old memory at index 1
+    delete[] list[1];
+
+    // Allocate new memory for the new word
+    int len = strlen(newWord) + 1;
+    list[1] = new char[len];
+    strcpy(list[1], newWord);
+
+    cout << "[After Update]" << endl;
+    for (int i = 0; i < count; i++) {
+        cout << "[" << i << "] " << list[i] << endl;
+    }
+    cout << endl;
+
+    // 4. Delete the word 'charlie' (at index 2)
+    const char* deleteWord = "charlie";
+    int deleteIndex = -1;
+
+    // Find the index of 'charlie'
+    for (int i = 0; i < count; i++) {
+        if (strcmp(list[i], deleteWord) == 0) {
+            deleteIndex = i;
+            break;
+        }
+    }
+
+    if (deleteIndex != -1) {
+        // Free the memory of the word to be deleted
+        delete[] list[deleteIndex];
+
+        // Shift all following elements one position to the left
+        for (int i = deleteIndex; i < count - 1; i++) {
+            list[i] = list[i + 1];
+        }
+
+        // Decrease the count
+        count--;
+    }
+
+    cout << "[After Delete]" << endl;
+    for (int i = 0; i < count; i++) {
+        cout << "[" << i << "] " << list[i] << endl;
+    }
+    cout << endl;
+
+    // Free all remaining allocated memory
+    for (int i = 0; i < count; i++) {
+        delete[] list[i];
+    }
+    delete[] list;
+
+    cout << "All memory released successfully!" << endl;
+
+    return 0;
+}
